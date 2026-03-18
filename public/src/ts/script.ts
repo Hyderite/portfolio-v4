@@ -45,8 +45,8 @@ const state = {
   linkRects: Array.from(ui.links).map((link) => link.getBoundingClientRect()),
   linkOffsets: Array.from(ui.links).map(() => ({ x: 0, y: 0 })),
   content: {
-    icons: ['house', 'info', 'code', 'outdoor_garden'],
-    items: ['Home', 'About', 'Projects', 'Backyard'],
+    icons: ['house', 'info', 'code', 'mail'],
+    items: ['Home', 'About', 'Projects', 'Contact'],
   },
 };
 
