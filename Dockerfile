@@ -1,26 +1,26 @@
-FROM node:22.22.1-alpine AS builder
+FROM node:24-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@10.15.1 --activate
 
-RUN npm install -g pnpm@10.28.2
-
+FROM base AS build
 WORKDIR /app
-
-COPY pnpm-lock.yaml package.json ./
-
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
 ENV NODE_ENV=development
-
-RUN pnpm install --frozen-lockfile --prod=false
-
+RUN pnpm install --frozen-lockfile
 COPY . .
-
 RUN pnpm run build
 
-
-FROM caddy:2 AS runner
-
+FROM base AS runner
 WORKDIR /app
+ENV NODE_ENV=production
 
-COPY --from=builder /app/public/dist /usr/share/caddy
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -L "https://github.com" | tar -xz -C /usr/bin caddy \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /app/public/dist ./public/dist
 
 EXPOSE 3000
 
-CMD ["caddy", "file-server", "--root", "public/dist", "--listen", ":3000"]
+CMD [ "caddy", "file-server", "--root", "public/dist", "--listen", ":3000" ]
