@@ -6,6 +6,8 @@ WORKDIR /app
 
 COPY pnpm-lock.yaml package.json ./
 
+ENV NODE_ENV=development
+
 RUN pnpm install --frozen-lockfile --prod=false
 
 COPY . .
@@ -13,7 +15,7 @@ COPY . .
 RUN pnpm run build
 
 
-FROM alpine:3.20
+FROM caddy:2-alpine AS runner
 
 WORKDIR /app
 
@@ -21,4 +23,4 @@ COPY --from=builder /app/public/dist ./public/dist
 
 EXPOSE 3000
 
-CMD ["tail", "-f", "/dev/null"]
+CMD ["caddy", "file-server", "--root", "public/dist", "--listen", ":3000"]
