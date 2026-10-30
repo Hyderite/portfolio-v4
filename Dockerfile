@@ -15,7 +15,7 @@ COPY . .
 RUN pnpm run build
 
 
-FROM caddy:2-alpine AS runner
+FROM caddy:2 AS runner
 
 WORKDIR /app
 
