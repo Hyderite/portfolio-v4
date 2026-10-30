@@ -47,11 +47,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Convert cache string to lowercase
+        run: |
+          MY_STR="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          LOWER_STR=$(echo "$MY_STR" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE_REF_LOWER=$LOWER_STR" >> $GITHUB_ENV
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},lowercase=true
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         id: build-and-push
@@ -64,8 +70,8 @@ jobs:
           provenance: false
           cache-from: |
             type=gha
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+            type=registry,ref=${{ env.IMAGE_REF_LOWER }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_REF_LOWER }}:buildcache,mode=max
 
       - name: Back up image and deploy
         if: github.event_name != 'pull_request'
