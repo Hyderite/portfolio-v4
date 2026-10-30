@@ -7,12 +7,8 @@
     "vite": "^8.3.5"
   },
   "scripts": {
-    "build:css": "postcss public/src/css/*.css --dir public/dist/css/ --ext .min.css",
-    "build:ts": "tsc",
-    "build": "pnpm build:css && pnpm build:ts",
-    "dev:ts": "tsc -w",
-    "dev:css": "chokidar \"public/src/css/**/*.css\" -c \"pnpm build:css\"",
-    "dev": "concurrently \"pnpm dev:ts\" \"pnpm dev:css\""
+    "dev": "vite",
+    "build": "tsc && vite build"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -101,6 +101,7 @@ nav {
     align-items: center;
     text-decoration: none;
     color: var(--text-color);
+    mix-blend-mode: difference;
   }
 
   & ul {
@@ -152,6 +153,7 @@ nav {
 #logo {
   aspect-ratio: 1;
   fill: var(--text-color);
+  mix-blend-mode: difference;
 
   & .st0,
   & .st1,
