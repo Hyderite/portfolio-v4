@@ -19,7 +19,7 @@ FROM caddy:2 AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/public/dist ./public/dist
+COPY --from=builder /app/public/dist /usr/share/caddy
 
 EXPOSE 3000
 
