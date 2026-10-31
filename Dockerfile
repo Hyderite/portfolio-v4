@@ -16,11 +16,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
-    && curl -L "https://github.com/caddyserver/caddy/releases/download/v2.11.7/caddy_2.11.7_linux_amd64.tar.gz" | tar -xz -C /usr/bin caddy \
-    && rm -rf /var/lib/apt/lists/*
+ && curl -L "https://github.com" | tar -xz -C /usr/bin caddy \
+ && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /app/public/dist ./public/dist
+COPY --from=build /app/public/dist .
 
 EXPOSE 3000
 
-CMD [ "caddy", "file-server", "--root", "./public/dist", "--listen", ":3000" ]
+CMD [ "caddy", "file-server", "--root", ".", "--listen", ":3000" ]
