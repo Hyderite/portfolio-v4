@@ -24,6 +24,8 @@ COPY --from=build /app/public/dist .
 
 COPY --from=build /app/public/dist ./dist
 
+COPY Caddyfile .
+
 EXPOSE 3000
 
-CMD [ "caddy", "file-server", "--root", ".", "--listen", ":3000" ]
+CMD [ "caddy", "run", "--config", "Caddyfile", "--adapter", "caddyfile" ]
