@@ -7,8 +7,14 @@ export default defineConfig({
     build: {
         outDir: 'public/dist',
         emptyOutDir: true,
+        cssCodeSplit: true,
         rollupOptions: {
             input: {
+                ...glob.sync('public/src/css/**/*.css').reduce((entries, file) => {
+                    const name = file.replace(/^public\/src\/css\/|\.css$/g, '');
+                    entries[`css/${name}`] = resolve(__dirname, file);
+                    return entries;
+                }, {}),
                 ...glob.sync('public/src/ts/**/*.ts').reduce((entries, file) => {
                     const name = file.replace(/^public\/src\/ts\/|\.ts$/g, '');
                     entries[name] = resolve(__dirname, file);
@@ -20,8 +26,8 @@ export default defineConfig({
                 chunkFileNames: 'js/[name].js',
                 assetFileNames: (assetInfo) => {
                     if (assetInfo.name?.endsWith('.css')) {
-                        const originalName = assetInfo.name.replace(/\.css$/, '');
-                        return `css/${originalName}.min.[ext]`;
+                        const cleanName = assetInfo.name.replace(/^css\//, '').replace(/\.css$/, '');
+                        return `css/${cleanName}.min.[ext]`;
                     }
                     return 'assets/[name].[ext]';
                 }
