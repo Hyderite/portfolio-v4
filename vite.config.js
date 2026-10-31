@@ -4,8 +4,7 @@ import glob from 'fast-glob';
 
 export default defineConfig({
     build: {
-        outDir: 'public',
-        emptyOutDir: false,
+        outDir: 'public/dist',
         rollupOptions: {
             input: {
                 ...glob.sync('public/src/css/**/*.css').reduce((entries, file) => {
@@ -20,15 +19,13 @@ export default defineConfig({
                 }, {})
             },
             output: {
-                inlineDynamicImports: false,
-
-                entryFileNames: 'dist/js/[name].js',
-                chunkFileNames: 'dist/js/[name].js',
+                entryFileNames: 'js/[name].js',
+                chunkFileNames: 'js/[name].js',
                 assetFileNames: (assetInfo) => {
                     if (assetInfo.name?.endsWith('.css')) {
-                        return 'dist/css/[name].min.[ext]';
+                        return 'css/[name].min.[ext]';
                     }
-                    return 'dist/assets/[name].[ext]';
+                    return 'assets/[name].[ext]';
                 }
             }
         }
