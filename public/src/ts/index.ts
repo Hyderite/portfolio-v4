@@ -101,39 +101,39 @@ insertBg();
 
 // on load animation
 
-const animation = {
-  logo: document.querySelector<SVGElement>('#onload #logo')!,
-  strokes: Array.from(document.querySelectorAll<SVGElement>('#onload .st0, #onload .st2, #onload .st3'))!,
-  text: {
-    hello: Array.from(document.querySelectorAll<HTMLSpanElement>('#onload #hello span'))!,
-    intro: Array.from(document.querySelectorAll<HTMLSpanElement>('#onload #intro span:not(#dot, #name)'))!,
-  },
-};
-
-const navbar = document.querySelector<HTMLElement>('nav')!;
-
 window.addEventListener('load', async () => {
-  if (!animation) return;
+  const logo = document.querySelector<SVGElement>('#onload #logo');
+  const navbar = document.querySelector<HTMLElement>('nav');
+  const dot = document.querySelector<HTMLSpanElement>('#dot');
+  const bgElement = document.querySelector<HTMLElement>('#bg');
+  const nameElement = document.querySelector<HTMLElement>('#name');
 
-  const dot = document.querySelector<HTMLSpanElement>('#dot')!;
+  const strokes = Array.from(document.querySelectorAll<SVGElement>('#onload .st0, #onload .st2, #onload .st3') || []);
+  const helloSpans = Array.from(document.querySelectorAll<HTMLSpanElement>('#onload #hello span') || []);
+  const introSpans = Array.from(
+    document.querySelectorAll<HTMLSpanElement>('#onload #intro span:not(#dot, #name)') || [],
+  );
+  const nameSpans = Array.from(document.querySelectorAll<HTMLSpanElement>('#name span') || []);
+
+  if (!logo || !navbar || !dot || !bgElement) return;
 
   const visited = sessionStorage.getItem('visited');
 
   const skip = async () => {
-    if (animation.text.intro) {
-      animation.text.intro.forEach((span) => {
+    if (introSpans) {
+      introSpans.forEach((span) => {
         span.style.transition = 'color 0.3s ease';
         span.offsetHeight;
         span.style.opacity = '1';
       });
     }
     if (dot) {
-      document.querySelector<HTMLElement>('#bg')!.style.opacity = '1';
+      bgElement.style.opacity = '1';
       document.querySelector<HTMLElement>('#name')?.classList.add('draw');
       dot.style.opacity = '1';
       dot.style.transform = `translateX(0px)`;
       navbar.style.transform = 'translateY(0)';
-      animation.logo.style.display = 'none';
+      logo.style.display = 'none';
       for (const span of Array.from(document.querySelectorAll<HTMLSpanElement>('#name span'))) {
         span.style.color = 'var(--theme-color)';
         await sleep(80);
@@ -142,7 +142,7 @@ window.addEventListener('load', async () => {
 
     await sleep(500);
 
-    if ((window as any).updateRects) {
+    if (typeof (window as any).updateRects === 'function') {
       (window as any).updateRects();
     }
   };
@@ -152,42 +152,42 @@ window.addEventListener('load', async () => {
   } else {
     sessionStorage.setItem('visited', 'true');
 
-    if (dot && animation.text.intro) {
+    if (dot && introSpans) {
       dot.style.transition = 'none';
       dot.style.opacity = '0';
-      animation.logo.style.display = 'block';
+      logo.style.display = 'block';
 
       await sleep(100);
 
-      animation.logo.classList.add('animate');
+      logo.classList.add('animate');
 
       await sleep(1250);
 
-      animation.strokes.forEach((stroke) => (stroke.style.strokeWidth = '0px'));
+      strokes.forEach((stroke) => (stroke.style.strokeWidth = '0px'));
 
       await sleep(500);
 
-      animation.logo.style.display = 'none';
-      for (const span of animation.text.hello) {
+      logo.style.display = 'none';
+      for (const span of helloSpans) {
         span.style.opacity = '1';
         await sleep(50);
       }
 
       await sleep(800);
 
-      for (const span of animation.text.hello) {
+      for (const span of helloSpans) {
         span.style.opacity = '0';
         await sleep(80);
       }
 
       await sleep(500);
 
-      for (const span of animation.text.intro) {
+      for (const span of introSpans) {
         span.style.opacity = '1';
         await sleep(50);
       }
 
-      await sleep(animation.text.intro.length * 50);
+      await sleep(introSpans.length * 50);
 
       navbar.style.transform = 'translateY(0)';
 
@@ -201,7 +201,7 @@ window.addEventListener('load', async () => {
       dot.style.transform = `translateX(0px)`;
       dot.style.opacity = '1';
 
-      document.querySelector<HTMLElement>('#bg')!.style.opacity = '1';
+      bgElement.style.opacity = '1';
 
       for (const span of Array.from(document.querySelectorAll<HTMLSpanElement>('#name span'))) {
         document.querySelector<HTMLElement>('#name')?.classList.add('draw');
@@ -211,7 +211,7 @@ window.addEventListener('load', async () => {
 
       await sleep(500);
 
-      if ((window as any).updateRects) {
+      if (typeof (window as any).updateRects === 'function') {
         (window as any).updateRects();
       }
     }

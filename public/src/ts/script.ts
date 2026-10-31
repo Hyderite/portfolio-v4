@@ -14,17 +14,19 @@ interface ui {
 }
 
 const ui: ui = {
-  body: document.body,
-  main: (document.querySelector('main')! || document.body.children[0])!,
-  nav: document.querySelector('nav')!,
-  logo: document.querySelector('a #logo')!,
-  logoLink: document.querySelector('nav > a')!,
-  navList: document.querySelector('nav ul:not(#mobile)')!,
-  indicator: document.querySelector('nav ul:not(#mobile) div')!,
-  links: document.querySelectorAll('nav ul:not(#mobile) li a')!,
-  menuBtn: document.querySelector('#menu-button')!,
-  mobileMenu: document.querySelector('#mobile-menu')!,
-  mobileNav: document.querySelector('nav #mobile-menu ul#mobile')!,
+  body: document.body || document.createElement('body'),
+  main: (document.querySelector('main') ||
+    document.body?.children?.[0] ||
+    document.createElement('main')) as HTMLElement,
+  nav: (document.querySelector('nav') || document.createElement('nav')) as HTMLElement,
+  logo: (document.querySelector('a #logo') || document.createElement('img')) as HTMLImageElement,
+  logoLink: (document.querySelector('nav > a') || document.createElement('a')) as HTMLAnchorElement,
+  navList: (document.querySelector('nav ul:not(#mobile)') || document.createElement('ul')) as HTMLUListElement,
+  indicator: (document.querySelector('nav ul:not(#mobile) div') || document.createElement('div')) as HTMLDivElement,
+  links: document.querySelectorAll('nav ul:not(#mobile) li a'),
+  menuBtn: (document.querySelector('#menu-button') || document.createElement('button')) as HTMLButtonElement,
+  mobileMenu: (document.querySelector('#mobile-menu') || document.createElement('div')) as HTMLDivElement,
+  mobileNav: (document.querySelector('nav #mobile-menu ul#mobile') || document.createElement('ul')) as HTMLUListElement,
 };
 
 const state = {
@@ -36,15 +38,15 @@ const state = {
     fading: false,
     clicked: false,
     mobileMenuFading: false,
-    currentTargetLink: ui.links[0] as HTMLAnchorElement,
+    currentTargetLink: null as unknown as HTMLAnchorElement,
   },
   mouse: { x: 0, y: 0 },
   indicator: {
     target: { x: 0, y: 0, w: 0, h: 0, opacity: 0 },
     current: { x: 0, y: 0, w: 0, h: 0, opacity: 0 },
   },
-  linkRects: Array.from(ui.links).map((link) => link.getBoundingClientRect()),
-  linkOffsets: Array.from(ui.links).map(() => ({ x: 0, y: 0 })),
+  linkRects: [] as DOMRect[],
+  linkOffsets: [] as { x: number; y: number }[],
   content: {
     icons: ['house', 'info', 'code', 'mail'],
     items: ['Home', 'About', 'Projects', 'Contact'],
@@ -54,6 +56,7 @@ const state = {
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // logo animation
+
 async function logoAnimation() {
   ui.logo.style.opacity = '0';
   await sleep(50);
@@ -74,11 +77,29 @@ if (!window.matchMedia('(pointer: coarse)').matches) {
 }
 
 // navbar link hover effect
-const initRect = ui.links[0].getBoundingClientRect();
-state.indicator.current.x = state.indicator.target.x = initRect.left;
-state.indicator.current.y = state.indicator.target.y = initRect.bottom;
-state.indicator.current.w = state.indicator.target.w = initRect.width;
-state.indicator.current.h = state.indicator.target.h = initRect.height;
+
+function initNavbarMetrics() {
+  ui.links = document.querySelectorAll('nav ul:not(#mobile) li a');
+  if (!ui.links || ui.links.length === 0) return;
+
+  state.linkRects = Array.from(ui.links).map((link) => link.getBoundingClientRect());
+  state.linkOffsets = Array.from(ui.links).map(() => ({ x: 0, y: 0 }));
+  state.navbar.currentTargetLink = ui.links[0];
+
+  const initRect = ui.links[0].getBoundingClientRect();
+  state.indicator.current.x = state.indicator.target.x = initRect.left;
+  state.indicator.current.y = state.indicator.target.y = initRect.bottom;
+  state.indicator.current.w = state.indicator.target.w = initRect.width;
+  state.indicator.current.h = state.indicator.target.h = initRect.height;
+
+  update();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initNavbarMetrics);
+} else {
+  initNavbarMetrics();
+}
 
 window.addEventListener('mousemove', (e) => {
   state.mouse.x = e.clientX;
@@ -90,6 +111,10 @@ window.addEventListener('mousemove', (e) => {
 };
 
 function update() {
+  if (!ui.links || ui.links.length === 0 || state.linkRects.length === 0) {
+    requestAnimationFrame(update);
+    return;
+  }
   const navHovered = ui.navList.matches(':hover');
   let closestLink = state.navbar.currentTargetLink;
   let minDistance = Infinity;
@@ -294,9 +319,14 @@ async function updateNavbarState() {
   });
 }
 
-updateNavbarState();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateNavbarState);
+} else {
+  updateNavbarState();
+}
 
 // mobile menu logic
+
 ui.menuBtn.addEventListener('click', async () => {
   const isHidden = ui.mobileMenu.style.visibility === 'hidden' || ui.mobileMenu.style.display === '';
 
