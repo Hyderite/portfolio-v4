@@ -1,3 +1,6 @@
+import '../css/index.css';
+import { sleep } from './script';
+
 // background image marquee
 
 const bgImages = [

@@ -1,3 +1,4 @@
+import '../css/style.css';
 interface ui {
   body: HTMLElement;
   main: HTMLElement;
@@ -50,7 +51,7 @@ const state = {
   },
 };
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // logo animation
 async function logoAnimation() {
