@@ -24,4 +24,4 @@ COPY --from=build /app/public/dist .
 
 EXPOSE 3000
 
-CMD [ "caddy", "file-server", "--root", ".", "--listen", ":3000" ]
+CMD [ "caddy", "run", "--config", "", "--adapter", "", "--listen", ":3000" ]
