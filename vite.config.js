@@ -3,8 +3,10 @@ import { resolve } from 'path';
 import glob from 'fast-glob';
 
 export default defineConfig({
+    base: '/',
     build: {
         outDir: 'public/dist',
+        emptyOutDir: true,
         rollupOptions: {
             input: {
                 ...glob.sync('public/src/css/**/*.css').reduce((entries, file) => {
