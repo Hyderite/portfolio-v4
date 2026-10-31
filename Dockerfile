@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 COPY --from=build /app/public/dist .
 
+COPY --from=build /app/public/dist ./dist
+
 EXPOSE 3000
 
 CMD [ "caddy", "file-server", "--root", ".", "--listen", ":3000" ]
