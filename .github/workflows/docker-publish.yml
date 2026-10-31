@@ -95,8 +95,8 @@ jobs:
 
             npx --yes @temps-sdk/cli login --api-key "${TEMPS_API_KEY}" "${TEMPS_API_URL}"
             npx --yes @temps-sdk/cli deploy:image \
-              --project ${PROJECT_NAME} \
-              --environment-slug "production" \
+              --app ${PROJECT_NAME} \
+              --env "production" \
               --image "${TARGET_IMAGE}" || deploy_status=$?
           fi
 
