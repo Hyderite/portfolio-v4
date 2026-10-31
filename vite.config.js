@@ -4,8 +4,8 @@ import glob from 'fast-glob';
 
 export default defineConfig({
     build: {
-        outDir: 'public/dist',
-        treeshake: false,
+        outDir: 'public',
+        emptyOutDir: false,
         rollupOptions: {
             input: {
                 ...glob.sync('public/src/css/**/*.css').reduce((entries, file) => {
@@ -20,17 +20,15 @@ export default defineConfig({
                 }, {})
             },
             output: {
-                format: 'iife',
-                name: 'window',
-                extend: true,
+                inlineDynamicImports: false,
 
-                entryFileNames: 'js/[name].js',
-                chunkFileNames: 'js/[name].js',
+                entryFileNames: 'dist/js/[name].js',
+                chunkFileNames: 'dist/js/[name].js',
                 assetFileNames: (assetInfo) => {
                     if (assetInfo.name?.endsWith('.css')) {
-                        return 'css/[name].min.[ext]';
+                        return 'dist/css/[name].min.[ext]';
                     }
-                    return 'assets/[name].[ext]';
+                    return 'dist/assets/[name].[ext]';
                 }
             }
         }
