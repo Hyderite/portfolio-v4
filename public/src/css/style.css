@@ -101,7 +101,6 @@ nav {
     align-items: center;
     text-decoration: none;
     color: var(--text-color);
-    mix-blend-mode: difference;
   }
 
   & ul {

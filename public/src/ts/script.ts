@@ -180,7 +180,7 @@ function update() {
   state.indicator.target.w = targetRect.width;
   state.indicator.target.h = targetRect.height;
 
-  const snapSpeed = 0.2;
+  const snapSpeed = 0.1;
   state.indicator.current.x += (state.indicator.target.x - state.indicator.current.x) * snapSpeed;
   state.indicator.current.y += (state.indicator.target.y - state.indicator.current.y) * snapSpeed;
   state.indicator.current.w += (state.indicator.target.w - state.indicator.current.w) * snapSpeed;
