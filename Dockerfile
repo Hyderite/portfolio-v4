@@ -1,4 +1,4 @@
-FROM node:24-slim AS base
+FROM node:22-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@10.15.1 --activate
@@ -23,4 +23,4 @@ COPY --from=build /app/public/dist ./public/dist
 
 EXPOSE 3000
 
-CMD [ "caddy", "file-server", "--root", "public/dist", "--listen", ":3000" ]
+CMD [ "caddy", "file-server", "--root", "public", "--listen", ":3000" ]
