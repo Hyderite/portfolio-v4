@@ -6,9 +6,10 @@
         "rootDir": "./public/src/ts",
         "strict": true,
         "esModuleInterop": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "noEmit": false,
         "allowImportingTsExtensions": false,
+        "noUncheckedSideEffectImports": false,
         "resolveJsonModule": true,
         "isolatedModules": true
     },
