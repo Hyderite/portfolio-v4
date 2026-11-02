@@ -9,7 +9,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
 ENV NODE_ENV=development
 RUN pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm --filter=portfolio-v4 --prod deploy /prod-app
 RUN pnpm run build
 
 FROM base AS runner
