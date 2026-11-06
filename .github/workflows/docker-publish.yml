@@ -99,3 +99,10 @@ jobs:
               --image "${TARGET_IMAGE}" \
               --timeout 300 || deploy_status=$?
           fi
+
+          sign_status=0
+          wait "$sign_pid" || sign_status=$?
+          if [ "$deploy_status" -ne 0 ] || [ "$sign_status" -ne 0 ]; then
+            echo "Pipeline failed. Deploy status: $deploy_status, Sign status: $sign_status"
+            exit 1
+          fi
